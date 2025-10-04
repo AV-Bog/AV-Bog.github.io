@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>С Днём Рождения!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Общие стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0a192f 0%, #1a365d 50%, #2a4b7c 100%);
+            color: #e6e6ff;
+            line-height: 1.6;
+            overflow-x: hidden;
+            touch-action: manipulation;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Фон с котиками */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath fill='%234a5568' fill-opacity='0.2' d='M30,40 C35,35 40,30 50,30 C60,30 65,35 70,40 C75,45 80,50 70,60 C60,70 50,75 40,70 C30,65 25,60 20,50 C15,40 25,45 30,40 Z'/%3E%3Cpath fill='%234a5568' fill-opacity='0.1' d='M65,25 C70,20 75,15 85,15 C95,15 100,20 105,25 C110,30 115,35 105,45 C95,55 85,60 75,55 C65,50 60,45 55,35 C50,25 60,30 65,25 Z'/%3E%3C/svg%3E"),
+                    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath fill='%235a67d8' fill-opacity='0.15' d='M20,30 C25,25 30,20 40,20 C50,20 55,25 60,30 C65,35 70,40 60,50 C50,60 40,65 30,60 C20,55 15,50 10,40 C5,30 15,35 20,30 Z'/%3E%3C/svg%3E");
+            background-size: 200px, 150px;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        /* Контейнер для контента */
+        .scroll-container {
+            width: 100%;
+            max-width: 100%;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Заголовок */
+        .header {
+            text-align: center;
+            padding: 40px 20px 30px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1.5s ease forwards 0.5s;
+        }
+
+        h1 {
+            font-size: clamp(2.2rem, 8vw, 4rem);
+            margin-bottom: 15px;
+            color: #d6bcfa;
+            text-shadow: 0 2px 10px rgba(214, 188, 250, 0.4);
+            font-weight: 800;
+            background: linear-gradient(45deg, #d6bcfa, #9f7aea, #d53f8c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+            animation: textPulse 5s infinite ease-in-out;
+        }
+
+        .subtitle {
+            font-size: clamp(1.1rem, 4vw, 1.8rem);
+            color: #a3bffa;
+            font-weight: 400;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            letter-spacing: 0.5px;
+            animation: subtitlePulse 7s infinite ease-in-out;
+        }
+
+        /* Элементы с воспоминаниями */
+        .memory-item {
+            background: linear-gradient(135deg, #7e3bff 0%, #5a67d8 50%, #4c51bf 100%);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3),
+            0 0 20px rgba(122, 90, 248, 0.4);
+            opacity: 0;
+            transform: translateY(30px);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .memory-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.4),
+            transparent);
+        }
+
+        .memory-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .memory-item:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4),
+            0 0 30px rgba(122, 90, 248, 0.5);
+        }
+
+        .memory-item:active {
+            transform: scale(0.98);
+        }
+
+        /* Контейнер для фото с подложкой */
+        .photo-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .photo-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+            transition: background-color 0.3s ease;
+        }
+
+        .photo {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            position: relative;
+            z-index: 2;
+            transition: transform 0.5s ease;
+        }
+
+        .memory-item:hover .photo {
+            transform: scale(1.05);
+        }
+
+        .text-content {
+            padding: 25px;
+            position: relative;
+            text-align: center;
+        }
+
+        .poem {
+            font-style: italic;
+            text-align: center;
+            font-size: clamp(1.1rem, 4vw, 1.5rem);
+            line-height: 1.7;
+            color: #e9d8fd;
+            margin: 20px 0;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            font-family: 'Montserrat', sans-serif;
+            animation: textScale 10s infinite alternate;
+        }
+
+        .message {
+            font-size: clamp(1rem, 3.5vw, 1.3rem);
+            color: #c3dafe;
+            padding: 0 10px;
+            margin: 20px 0;
+            line-height: 1.6;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            animation: messagePulse 8s infinite alternate;
+        }
+
+        .heart-text {
+            color: #fbb6ce;
+            font-size: clamp(1.8rem, 6vw, 3rem);
+            text-align: center;
+            margin: 20px 0;
+            animation: pulse 2s infinite, heartBeat 5s infinite;
+            text-shadow: 0 0 10px rgba(251, 182, 206, 0.6);
+        }
+
+        /* Футер */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: #a3bffa;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            opacity: 0.8;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            letter-spacing: 1px;
+            animation: footerGlow 6s infinite alternate;
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        @keyframes textPulse {
+            0%, 100% {
+                transform: scale(1);
+                letter-spacing: -0.5px;
+            }
+            50% {
+                transform: scale(1.02);
+                letter-spacing: -0.3px;
+            }
+        }
+
+        @keyframes subtitlePulse {
+            0%, 100% {
+                transform: translateY(0);
+                opacity: 0.9;
+            }
+            50% {
+                transform: translateY(-2px);
+                opacity: 1;
+            }
+        }
+
+        @keyframes textScale {
+            0% {
+                transform: scale(0.98);
+                line-height: 1.7;
+            }
+            100% {
+                transform: scale(1.02);
+                line-height: 1.75;
+            }
+        }
+
+        @keyframes messagePulse {
+            0% {
+                transform: scale(0.99);
+                font-weight: 400;
+            }
+            100% {
+                transform: scale(1.01);
+                font-weight: 450;
+            }
+        }
+
+        @keyframes heartBeat {
+            0%, 90%, 100% {
+                transform: scale(1);
+            }
+            95% {
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes footerGlow {
+            0% {
+                opacity: 0.7;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            }
+            100% {
+                opacity: 0.9;
+                text-shadow: 0 1px 5px rgba(163, 191, 250, 0.5);
+            }
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3),
+                0 0 20px rgba(122, 90, 248, 0.4);
+            }
+            50% {
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(122, 90, 248, 0.7);
+            }
+        }
+
+        /* Анимация смайликов */
+        @keyframes emojiFly {
+            0% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx, 100px), var(--ty, -100px)) scale(0.5) rotate(var(--rotate, 360deg));
+                opacity: 0;
+            }
+        }
+
+        .emoji {
+            position: fixed;
+            pointer-events: none;
+            z-index: 1000;
+            font-size: 2rem;
+            animation: emojiFly 1.5s ease-out forwards;
+            user-select: none;
+            will-change: transform, opacity;
+        }
+
+        /* Декоративные элементы - котята */
+        .kitten {
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+            font-size: 3rem;
+            opacity: 0.2;
+            animation: float 8s infinite ease-in-out;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .kitten:hover {
+            transform: scale(1.2);
+            opacity: 0.4;
+        }
+
+        .kitten1 {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .kitten2 {
+            top: 25%;
+            right: 7%;
+            animation-delay: 2s;
+            font-size: 2.8rem;
+        }
+
+        .kitten3 {
+            bottom: 20%;
+            left: 10%;
+            animation-delay: 4s;
+            font-size: 3.2rem;
+        }
+
+        .kitten4 {
+            bottom: 15%;
+            right: 15%;
+            animation-delay: 1s;
+            font-size: 2.5rem;
+        }
+
+        .kitten5 {
+            top: 40%;
+            left: 15%;
+            animation-delay: 3s;
+            font-size: 3.5rem;
+        }
+
+        /* Конфетти */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f472b6;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+            border-radius: 50%;
+        }
+
+        /* Специальные стили для мобильных устройств */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: clamp(1.8rem, 8vw, 2.5rem);
+                font-weight: 700;
+            }
+
+            .subtitle {
+                font-size: clamp(1rem, 4vw, 1.4rem);
+            }
+
+            .poem {
+                font-size: clamp(1rem, 4vw, 1.3rem);
+                line-height: 1.6;
+            }
+
+            .message {
+                font-size: clamp(0.95rem, 3.5vw, 1.1rem);
+                line-height: 1.5;
+            }
+
+            .heart-text {
+                font-size: clamp(1.5rem, 6vw, 2.5rem);
+            }
+
+            .footer {
+                font-size: clamp(0.8rem, 3vw, 1rem);
+            }
+
+            .memory-item:hover {
+                transform: none;
+            }
+        }
+
+        /* Предотвращение выделения текста */
+        .no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Блестящие частицы */
+        .sparkle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 2;
+            animation: sparkle 3s infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1) rotate(180deg); }
+        }
+
+        /* Эффект параллакса */
+        .parallax-item {
+            transition: transform 0.1s ease;
+        }
+    </style>
+</head>
+<body class="no-select">
+<!-- Декоративные котята -->
+<div class="kitten kitten1">🐱</div>
+<div class="kitten kitten2">😺</div>
+<div class="kitten kitten3">😸</div>
+<div class="kitten kitten4">🐾</div>
+<div class="kitten kitten5">😻</div>
+
+<div class="scroll-container">
+    <div class="header">
+        <h1>С Днём Рождения, Таточка!</h1>
+        <div class="subtitle">Этот особенный день только для тебя</div>
+    </div>
+
+    <div class="memory-item parallax-item">
+        <div class="photo-container">
+            <div class="photo-background"></div>
+            <img src="photo_2025-01-07_22-18-30.jpg" alt="Наше прекрасное воспоминание" class="photo">
+        </div>
+        <div class="text-content">
+            <div class="poem">
+                Пусть глаза глядят туда, где светит.<br>
+                Солнцем и добром пусть сердце бредит!
+            </div>
+        </div>
+    </div>
+
+    <div class="memory-item parallax-item">
+        <div class="text-content">
+            <div class="poem">
+                Будет все в делах учебных круто,<br>
+                Воздух свеж и капает валюта!
+            </div>
+            <div class="poem">
+                Техника не тупит, жизнь гудит,<br>
+                Память не подводит, каст стоит.
+            </div>
+        </div>
+    </div>
+
+    <div class="memory-item parallax-item">
+        <div class="photo-container">
+            <div class="photo-background"></div>
+            <img src="photo_2025-06-11_20-25-03.jpg" alt="Ещё одно прекрасное воспоминание" class="photo">
+        </div>
+    </div>
+
+    <div class="memory-item parallax-item">
+        <div class="text-content">
+            <div class="poem">
+                Пятерки валятся рекой, а мы<br>
+                Навсегда рядом, типо две половины.
+            </div>
+            <div class="heart-text">❤</div>
+        </div>
+    </div>
+
+    <div class="memory-item parallax-item">
+        <div class="photo-container">
+            <div class="photo-background"></div>
+            <img src="photo_2025-07-01_22-48-37.jpg" alt="И ещё одно прекрасное воспоминание" class="photo">
+        </div>
+        <div class="text-content">
+            <div class="poem">
+                И пусть лежа, сидя и в душе<br>
+                Будет мир на душе и снаружи.
+            </div>
+        </div>
+    </div>
+
+    <div class="memory-item parallax-item">
+        <div class="photo-container">
+            <div class="photo-background"></div>
+            <img src="photo_2024-11-30_22-36-46.jpg" alt="И ещё одно прекрасное воспоминание" class="photo">
+        </div>
+    </div>
+
+    <div class="memory-item parallax-item">
+        <div class="photo-container">
+            <div class="photo-background"></div>
+            <img src="photo_2025-05-19_23-46-18.jpg" alt="И ещё одно прекрасное воспоминание" class="photo">
+        </div>
+    </div>
+
+    <div class="memory-item parallax-item">
+        <div class="photo-container">
+            <div class="photo-background"></div>
+            <img src="photo_2025-06-01_14-05-42.jpg" alt="И ещё одно прекрасное воспоминание" class="photo">
+        </div>
+    </div>
+
+    <div class="memory-item parallax-item">
+        <div class="photo-container">
+            <div class="photo-background"></div>
+            <img src="photo_2025-01-24_18-47-15.jpg" alt="И ещё одно прекрасное воспоминание" class="photo">
+        </div>
+    </div>
+
+    <div class="memory-item parallax-item">
+        <div class="photo-container">
+            <div class="photo-background"></div>
+            <img src="photo_2025-06-01_19-48-46.jpg" alt="И ещё одно прекрасное воспоминание" class="photo">
+        </div>
+    </div>
+
+    <div class="footer">
+        Создано с ❤️ специально для тебя
+    </div>
+</div>
+
+<script>
+    // Анимация появления элементов при скролле
+    document.addEventListener('DOMContentLoaded', function() {
+        const memoryItems = document.querySelectorAll('.memory-item');
+
+        // Функция для проверки видимости элемента
+        function checkVisibility() {
+            memoryItems.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    item.classList.add('visible');
+
+                    // Добавляем свечение при появлении
+                    item.style.animation = 'glow 2s ease';
+                    setTimeout(() => {
+                        item.style.animation = '';
+                    }, 2000);
+                }
+            });
+        }
+
+        // Проверяем при загрузке и при скролле
+        checkVisibility();
+        window.addEventListener('scroll', checkVisibility);
+
+        // Добавляем интерактивность при касании
+        memoryItems.forEach(item => {
+            item.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.98)';
+                this.style.boxShadow = '0 5px 20px rgba(122, 90, 248, 0.6)';
+            });
+
+            item.addEventListener('touchend', function() {
+                this.style.transform = 'scale(1)';
+                this.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(122, 90, 248, 0.4)';
+            });
+
+            // Анимация при клике
+            item.addEventListener('click', function() {
+                this.style.transform = 'scale(0.97)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 300);
+                createConfetti(20);
+            });
+        });
+
+        // Создаем блестящие частицы
+        function createSparkles() {
+            const container = document.querySelector('.scroll-container');
+            for (let i = 0; i < 20; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.width = Math.random() * 5 + 2 + 'px';
+                sparkle.style.height = sparkle.style.width;
+                sparkle.style.left = Math.random() * 100 + 'vw';
+                sparkle.style.top = Math.random() * 100 + 'vh';
+                sparkle.style.animationDelay = Math.random() * 3 + 's';
+                sparkle.style.animationDuration = Math.random() * 2 + 2 + 's';
+                document.body.appendChild(sparkle);
+            }
+        }
+
+        createSparkles();
+
+        // Создаем конфетти
+        function createConfetti(count) {
+            const colors = ['#f472b6', '#fbbf24', '#a78bfa', '#60a5fa', '#34d399'];
+
+            for (let i = 0; i < count; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = Math.random() * 10 + 5 + 'px';
+                confetti.style.height = Math.random() * 10 + 5 + 'px';
+                confetti.style.animation = `confettiFall ${Math.random() * 2 + 1}s linear forwards`;
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+
+                document.body.appendChild(confetti);
+
+                // Удаляем конфетти после анимации
+                setTimeout(() => {
+                    confetti.remove();
+                }, 3000);
+            }
+        }
+
+        // Функция для создания летящих смайликов с разными наборами для каждой фотки
+        // Функция для создания летящих смайликов с разными наборами для каждой фотки
+        function createEmojis(x, y, photoIndex) {
+            // Разные наборы смайликов для разных фотографий
+            const emojiSets = [
+                ['😊', '😍', '🥰', '😘', '😻'], // романтические
+                ['🌟', '✨', '🎉', '🎂', '🎁'], // праздничные
+                ['❤️', '💕', '💖', '💝', '💗'], // сердечки
+                ['🥳', '🤗', '😎', '🤩', '😄'], // веселые
+                ['🌸', '🌺', '🌷', '💐', '🌼'], // цветочки
+                ['🐱', '🐾', '😺', '😸', '😽'], // котики
+                ['⭐', '⚡', '💫', '🌟', '✨'], // звезды
+                ['🎈', '🎊', '🎀', '🎇', '🎆'], // праздник
+                ['💞', '💓', '💘', '💌', '💟'], // любовь
+                ['🤍', '💛', '💚', '💙', '💜']  // разноцветные сердечки
+            ];
+
+            // Выбираем набор смайликов в зависимости от индекса фотки
+            const emojis = emojiSets[photoIndex % emojiSets.length];
+            const count = 15 + Math.floor(Math.random() * 10); // 15-25 смайликов
+
+            for (let i = 0; i < count; i++) {
+                const emoji = document.createElement('div');
+                emoji.className = 'emoji';
+                emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+                // Случайное направление и БОЛЬШАЯ скорость (увеличено расстояние)
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 300 + Math.random() * 400; // было 100-300, стало 300-700
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance - 100; // было -50, стало -100
+                const rotate = (Math.random() - 0.5) * 1080; // было 720, стало 1080 (больше вращение)
+
+                // Устанавливаем индивидуальную анимацию для каждого смайлика
+                const animationName = `emojiFly-${Date.now()}-${i}`;
+                emoji.style.animation = `${animationName} 2s ease-out forwards`; // увеличено время с 1.5s до 2s
+
+                // Создаем динамические keyframes
+                const style = document.createElement('style');
+                style.textContent = `
+            @keyframes ${animationName} {
+                0% {
+                    transform: translate(0, 0) scale(1) rotate(0deg);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translate(${tx}px, ${ty}px) scale(0.3) rotate(${rotate}deg); // уменьшен scale с 0.5 до 0.3
+                    opacity: 0;
+                }
+            }
+        `;
+                document.head.appendChild(style);
+
+                // Случайный размер (немного увеличен)
+                const size = 1.5 + Math.random() * 2; // было 1-2.5, стало 1.5-3.5
+                emoji.style.fontSize = `${size}rem`;
+
+                // Начальная позиция (где был клик)
+                emoji.style.left = `${x}px`;
+                emoji.style.top = `${y}px`;
+
+                // Случайная задержка для более естественного вида
+                emoji.style.animationDelay = `${Math.random() * 0.3}s`; // увеличена задержка
+
+                document.body.appendChild(emoji);
+
+                // Удаляем смайлик после анимации (увеличено время)
+                setTimeout(() => {
+                    if (emoji.parentNode) {
+                        emoji.parentNode.removeChild(emoji);
+                    }
+                    // Также удаляем созданный style элемент
+                    if (style.parentNode) {
+                        style.parentNode.removeChild(style);
+                    }
+                }, 2000); // было 1500, стало 2000
+            }
+        }
+
+        // Добавляем обработчики кликов на все фотографии
+        const photos = document.querySelectorAll('.photo');
+        photos.forEach((photo, index) => {
+            photo.addEventListener('click', function(e) {
+                // Получаем координаты клика
+                const rect = this.getBoundingClientRect();
+                const x = rect.left + rect.width / 2; // центр фото
+                const y = rect.top + rect.height / 2; // центр фото
+
+                createEmojis(x, y, index);
+
+                // Небольшая анимация фото при клике
+                this.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 300);
+            });
+
+            // Также добавляем обработчик на контейнер для большей области клика
+            const container = photo.closest('.photo-container');
+            if (container) {
+                container.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        const rect = this.getBoundingClientRect();
+                        const x = rect.left + rect.width / 2;
+                        const y = rect.top + rect.height / 2;
+                        createEmojis(x, y, index);
+                    }
+                });
+            }
+        });
+
+        // Анализ цвета фотографий и установка подложки
+        function setPhotoBackgroundColors() {
+            const photos = document.querySelectorAll('.photo');
+
+            photos.forEach(photo => {
+                // Создаем временное изображение для анализа
+                const tempImg = new Image();
+                tempImg.crossOrigin = "Anonymous";
+                tempImg.src = photo.src;
+
+                tempImg.onload = function() {
+                    // Создаем canvas для анализа изображения
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = 1;
+                    canvas.height = 1;
+
+                    // Рисуем уменьшенную версию для анализа среднего цвета
+                    ctx.drawImage(tempImg, 0, 0, 1, 1);
+
+                    // Получаем средний цвет
+                    const pixelData = ctx.getImageData(0, 0, 1, 1).data;
+                    const avgColor = `rgba(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]}, 0.5)`;
+
+                    // Находим соответствующую подложку и устанавливаем цвет
+                    const container = photo.closest('.photo-container');
+                    const background = container.querySelector('.photo-background');
+                    background.style.backgroundColor = avgColor;
+                };
+            });
+        }
+
+        // Параллакс эффект
+        document.addEventListener('mousemove', function(e) {
+            const parallaxItems = document.querySelectorAll('.parallax-item');
+            const x = (window.innerWidth - e.pageX * 2) / 50;
+            const y = (window.innerHeight - e.pageY * 2) / 50;
+
+            parallaxItems.forEach(item => {
+                item.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        });
+
+        // Интерактивные котята
+        const kittens = document.querySelectorAll('.kitten');
+        kittens.forEach(kitten => {
+            kitten.addEventListener('click', function() {
+                this.style.animation = 'none';
+                this.style.transform = 'scale(1.5)';
+                this.style.opacity = '0.8';
+                createConfetti(15);
+
+                setTimeout(() => {
+                    this.style.animation = '';
+                    this.style.transform = '';
+                    this.style.opacity = '0.2';
+                }, 1000);
+            });
+        });
+
+        // Вызываем функцию после загрузки всех изображений
+        window.addEventListener('load', setPhotoBackgroundColors);
+
+        // Предотвращение любых действий по умолчанию
+        document.addEventListener('contextmenu', e => e.preventDefault());
+
+        // Предотвращение масштабирования
+        document.addEventListener('touchmove', function(e) {
+            if (e.scale !== 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Запускаем конфетти при загрузке
+        setTimeout(() => {
+            createConfetti(50);
+        }, 1500);
+    });
+</script>
+</body>
+</html>
