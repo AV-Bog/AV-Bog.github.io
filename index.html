@@ -861,13 +861,6 @@
         // Предотвращение любых действий по умолчанию
         document.addEventListener('contextmenu', e => e.preventDefault());
 
-        // Предотвращение масштабирования
-        document.addEventListener('touchmove', function(e) {
-            if (e.scale !== 1) {
-                e.preventDefault();
-            }
-        }, { passive: false });
-
         // Запускаем конфетти при загрузке
         setTimeout(() => {
             createConfetti(50);
