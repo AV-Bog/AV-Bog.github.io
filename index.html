@@ -2,13 +2,13 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>С Днём Рождения!</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Общие стили */
+        /* Сброс стилей */
         * {
             margin: 0;
             padding: 0;
@@ -16,50 +16,27 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        html, body {
-            height: 100%;
-            overflow-x: hidden;
-        }
-
+        /* Основные стили */
         body {
-            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #0a192f 0%, #1a365d 50%, #2a4b7c 100%);
             color: #e6e6ff;
             line-height: 1.6;
-            padding: 0;
-            margin: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
             position: relative;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
         }
 
-        .scroll-container {
+        .container {
             width: 100%;
             max-width: 100%;
             padding: 20px;
-            position: relative;
-            z-index: 1;
-            min-height: 100vh;
-        }
-
-        /* Фон с котиками - упрощен */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath fill='%234a5568' fill-opacity='0.2' d='M30,40 C35,35 40,30 50,30 C60,30 65,35 70,40 C75,45 80,50 70,60 C60,70 50,75 40,70 C30,65 25,60 20,50 C15,40 25,45 30,40 Z'/%3E%3C/svg%3E");
-            background-size: 200px;
-            z-index: -1;
-            opacity: 0.4;
         }
 
         /* Заголовок */
         .header {
             text-align: center;
-            padding: 30px 20px 20px;
+            padding: 30px 20px;
             opacity: 0;
             transform: translateY(20px);
             animation: fadeIn 1.5s ease forwards 0.5s;
@@ -68,53 +45,28 @@
         h1 {
             font-size: clamp(2.2rem, 8vw, 4rem);
             margin-bottom: 15px;
-            color: #d6bcfa;
-            text-shadow: 0 2px 10px rgba(214, 188, 250, 0.4);
-            font-weight: 800;
             background: linear-gradient(45deg, #d6bcfa, #9f7aea, #d53f8c);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-            animation: textPulse 5s infinite ease-in-out;
+            font-weight: 800;
         }
 
         .subtitle {
             font-size: clamp(1.1rem, 4vw, 1.8rem);
             color: #a3bffa;
             font-weight: 400;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-            letter-spacing: 0.5px;
         }
 
-        /* Элементы с воспоминаниями - оптимизированы */
+        /* Карточки воспоминаний */
         .memory-item {
             background: linear-gradient(135deg, #7e3bff 0%, #5a67d8 50%, #4c51bf 100%);
             border-radius: 20px;
-            overflow: hidden;
             margin-bottom: 25px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3),
-            0 0 15px rgba(122, 90, 248, 0.4);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
             opacity: 0;
             transform: translateY(30px);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
+            transition: transform 0.3s ease;
             overflow: hidden;
-            cursor: pointer;
-        }
-
-        .memory-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg,
-            transparent,
-            rgba(255, 255, 255, 0.4),
-            transparent);
         }
 
         .memory-item.visible {
@@ -122,64 +74,36 @@
             transform: translateY(0);
         }
 
-        /* Контейнер для фото с подложкой */
         .photo-container {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 100%;
             overflow: hidden;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-            cursor: pointer;
-            background: rgba(0, 0, 0, 0.2);
         }
 
         .photo {
-            max-width: 100%;
+            width: 100%;
             height: auto;
             display: block;
-            position: relative;
-            z-index: 2;
             transition: transform 0.4s ease;
         }
 
         .text-content {
             padding: 20px;
-            position: relative;
             text-align: center;
         }
 
         .poem {
             font-style: italic;
-            text-align: center;
             font-size: clamp(1.1rem, 4vw, 1.5rem);
-            line-height: 1.7;
             color: #e9d8fd;
             margin: 15px 0;
             font-weight: 500;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-            font-family: 'Montserrat', sans-serif;
-        }
-
-        .message {
-            font-size: clamp(1rem, 3.5vw, 1.3rem);
-            color: #c3dafe;
-            padding: 0 10px;
-            margin: 15px 0;
-            line-height: 1.6;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 400;
         }
 
         .heart-text {
             color: #fbb6ce;
             font-size: clamp(1.8rem, 6vw, 3rem);
-            text-align: center;
             margin: 15px 0;
             animation: pulse 2s infinite;
-            text-shadow: 0 0 10px rgba(251, 182, 206, 0.6);
         }
 
         /* Футер */
@@ -188,14 +112,9 @@
             padding: 30px 0;
             color: #a3bffa;
             font-size: clamp(0.9rem, 3vw, 1.1rem);
-            opacity: 0.8;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 300;
-            letter-spacing: 1px;
         }
 
-        /* Анимации - оптимизированы */
+        /* Анимации */
         @keyframes fadeIn {
             to {
                 opacity: 1;
@@ -204,30 +123,17 @@
         }
 
         @keyframes pulse {
-            0% { transform: scale(1); }
+            0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
         }
 
-        @keyframes textPulse {
-            0%, 100% {
-                transform: scale(1);
-                letter-spacing: -0.5px;
-            }
-            50% {
-                transform: scale(1.02);
-                letter-spacing: -0.3px;
-            }
-        }
-
-        /* Анимация смайликов - оптимизирована */
         @keyframes emojiFly {
             0% {
                 transform: translate(0, 0) scale(1) rotate(0deg);
                 opacity: 1;
             }
             100% {
-                transform: translate(var(--tx, 100px), var(--ty, -100px)) scale(0.5) rotate(var(--rotate, 360deg));
+                transform: translate(var(--tx), var(--ty)) scale(0.5) rotate(var(--rotate));
                 opacity: 0;
             }
         }
@@ -238,59 +144,30 @@
             z-index: 1000;
             font-size: 1.5rem;
             animation: emojiFly 1.5s ease-out forwards;
-            user-select: none;
         }
 
-        /* Декоративные элементы - котята */
+        /* Котики */
         .kitten {
             position: fixed;
             pointer-events: none;
             z-index: 0;
-            font-size: 2.5rem;
-            opacity: 0.2;
+            font-size: 2rem;
+            opacity: 0.3;
             animation: float 8s infinite ease-in-out;
         }
 
-        .kitten1 {
-            top: 10%;
-            left: 5%;
-            animation-delay: 0s;
-        }
-
-        .kitten2 {
-            top: 25%;
-            right: 7%;
-            animation-delay: 2s;
-            font-size: 2.2rem;
-        }
-
-        .kitten3 {
-            bottom: 20%;
-            left: 10%;
-            animation-delay: 4s;
-            font-size: 2.8rem;
-        }
-
-        .kitten4 {
-            bottom: 15%;
-            right: 15%;
-            animation-delay: 1s;
-            font-size: 2rem;
-        }
-
-        .kitten5 {
-            top: 40%;
-            left: 15%;
-            animation-delay: 3s;
-            font-size: 3rem;
-        }
+        .kitten1 { top: 10%; left: 5%; }
+        .kitten2 { top: 25%; right: 7%; }
+        .kitten3 { bottom: 20%; left: 10%; }
+        .kitten4 { bottom: 15%; right: 15%; }
+        .kitten5 { top: 40%; left: 15%; }
 
         @keyframes float {
             0%, 100% { transform: translateY(0) rotate(0deg); }
             50% { transform: translateY(-10px) rotate(3deg); }
         }
 
-        /* Конфетти - оптимизировано */
+        /* Конфетти */
         .confetti {
             position: fixed;
             width: 8px;
@@ -300,6 +177,7 @@
             pointer-events: none;
             z-index: 100;
             border-radius: 50%;
+            animation: confettiFall 2s linear forwards;
         }
 
         @keyframes confettiFall {
@@ -313,40 +191,10 @@
             }
         }
 
-        /* Специальные стили для мобильных устройств */
+        /* Мобильные стили */
         @media (max-width: 768px) {
-            .scroll-container {
+            .container {
                 padding: 15px;
-            }
-
-            .header {
-                padding: 20px 15px 15px;
-            }
-
-            h1 {
-                font-size: clamp(1.8rem, 8vw, 2.5rem);
-            }
-
-            .subtitle {
-                font-size: clamp(1rem, 4vw, 1.4rem);
-            }
-
-            .poem {
-                font-size: clamp(1rem, 4vw, 1.3rem);
-                line-height: 1.6;
-            }
-
-            .message {
-                font-size: clamp(0.95rem, 3.5vw, 1.1rem);
-                line-height: 1.5;
-            }
-
-            .heart-text {
-                font-size: clamp(1.5rem, 6vw, 2.5rem);
-            }
-
-            .footer {
-                font-size: clamp(0.8rem, 3vw, 1rem);
             }
 
             .memory-item {
@@ -357,17 +205,9 @@
                 padding: 15px;
             }
         }
-
-        /* Предотвращение выделения текста */
-        .no-select {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
     </style>
 </head>
-<body class="no-select">
+<body>
 <!-- Декоративные котята -->
 <div class="kitten kitten1">🐱</div>
 <div class="kitten kitten2">😺</div>
@@ -375,7 +215,7 @@
 <div class="kitten kitten4">🐾</div>
 <div class="kitten kitten5">😻</div>
 
-<div class="scroll-container">
+<div class="container">
     <div class="header">
         <h1>С Днём Рождения, Таточка!</h1>
         <div class="subtitle">Этот особенный день только для тебя</div>
@@ -470,62 +310,25 @@
 </div>
 
 <script>
-    // Исправленная версия скрипта с работающим скроллом
+    // Упрощенный JavaScript для мобильных устройств
     document.addEventListener('DOMContentLoaded', function() {
         const memoryItems = document.querySelectorAll('.memory-item');
-        let ticking = false;
 
-        // Функция для проверки видимости элемента с троттлингом
+        // Анимация появления при скролле
         function checkVisibility() {
-            if (!ticking) {
-                requestAnimationFrame(() => {
-                    memoryItems.forEach(item => {
-                        const rect = item.getBoundingClientRect();
-                        if (rect.top < window.innerHeight - 100) {
-                            item.classList.add('visible');
-                        }
-                    });
-                    ticking = false;
-                });
-                ticking = true;
-            }
+            memoryItems.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 50) {
+                    item.classList.add('visible');
+                }
+            });
         }
 
-        // Проверяем при загрузке и при скролле
+        // Проверяем видимость при загрузке и скролле
         checkVisibility();
-        window.addEventListener('scroll', checkVisibility, { passive: true });
+        window.addEventListener('scroll', checkVisibility);
 
-        // Упрощенная интерактивность для мобильных
-        memoryItems.forEach(item => {
-            let tapTimer;
-
-            item.addEventListener('touchstart', function(e) {
-                // Не предотвращаем поведение по умолчанию
-                tapTimer = setTimeout(() => {
-                    this.style.transform = 'scale(0.98)';
-                }, 100);
-            }, { passive: true });
-
-            item.addEventListener('touchend', function(e) {
-                // Не предотвращаем поведение по умолчанию
-                clearTimeout(tapTimer);
-                this.style.transform = 'scale(1)';
-
-                // Создаем конфетти при тапе
-                createConfetti(10);
-            }, { passive: true });
-
-            // Анимация при клике
-            item.addEventListener('click', function() {
-                this.style.transform = 'scale(0.97)';
-                setTimeout(() => {
-                    this.style.transform = '';
-                }, 300);
-                createConfetti(15);
-            });
-        });
-
-        // Оптимизированные конфетти
+        // Конфетти
         function createConfetti(count) {
             const colors = ['#f472b6', '#fbbf24', '#a78bfa', '#60a5fa', '#34d399'];
 
@@ -534,23 +337,20 @@
                 confetti.className = 'confetti';
                 confetti.style.left = Math.random() * 100 + 'vw';
                 confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.width = Math.random() * 8 + 4 + 'px';
-                confetti.style.height = confetti.style.width;
-                confetti.style.animation = `confettiFall ${Math.random() * 2 + 1}s linear forwards`;
-                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                confetti.style.animationDelay = (Math.random() * 0.5) + 's';
 
                 document.body.appendChild(confetti);
 
-                // Удаляем конфетти после анимации
                 setTimeout(() => {
                     if (confetti.parentNode) {
-                        confetti.parentNode.removeChild(confetti);
+                        confetti.remove();
                     }
                 }, 3000);
             }
         }
 
-        // Оптимизированные смайлики
+        // Смайлики
         function createEmojis(x, y, photoIndex) {
             const emojiSets = [
                 ['😊', '😍', '🥰', '😘', '😻'],
@@ -561,7 +361,7 @@
             ];
 
             const emojis = emojiSets[photoIndex % emojiSets.length];
-            const count = 12;
+            const count = 8;
 
             for (let i = 0; i < count; i++) {
                 const emoji = document.createElement('div');
@@ -569,34 +369,29 @@
                 emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
 
                 const angle = Math.random() * Math.PI * 2;
-                const distance = 200 + Math.random() * 200;
-                const tx = Math.cos(angle) * distance;
-                const ty = Math.sin(angle) * distance - 50;
-                const rotate = (Math.random() - 0.5) * 720;
+                const distance = 150 + Math.random() * 150;
+                const tx = Math.cos(angle) * distance + 'px';
+                const ty = Math.sin(angle) * distance - 50 + 'px';
+                const rotate = (Math.random() - 0.5) * 720 + 'deg';
 
-                emoji.style.setProperty('--tx', tx + 'px');
-                emoji.style.setProperty('--ty', ty + 'px');
-                emoji.style.setProperty('--rotate', rotate + 'deg');
+                emoji.style.setProperty('--tx', tx);
+                emoji.style.setProperty('--ty', ty);
+                emoji.style.setProperty('--rotate', rotate);
 
-                const size = 1 + Math.random() * 1.5;
-                emoji.style.fontSize = `${size}rem`;
-
-                emoji.style.left = `${x}px`;
-                emoji.style.top = `${y}px`;
-
-                emoji.style.animationDelay = `${Math.random() * 0.2}s`;
+                emoji.style.left = x + 'px';
+                emoji.style.top = y + 'px';
 
                 document.body.appendChild(emoji);
 
                 setTimeout(() => {
                     if (emoji.parentNode) {
-                        emoji.parentNode.removeChild(emoji);
+                        emoji.remove();
                     }
                 }, 1500);
             }
         }
 
-        // Обработчики для смайликов
+        // Обработчики для фотографий
         const photos = document.querySelectorAll('.photo');
         photos.forEach((photo, index) => {
             photo.addEventListener('click', function(e) {
@@ -606,6 +401,7 @@
 
                 createEmojis(x, y, index);
 
+                // Анимация фото
                 this.style.transform = 'scale(1.05)';
                 setTimeout(() => {
                     this.style.transform = '';
@@ -613,18 +409,18 @@
             });
         });
 
-        // Интерактивные котята
+        // Обработчики для карточек
+        memoryItems.forEach(item => {
+            item.addEventListener('click', function() {
+                createConfetti(10);
+            });
+        });
+
+        // Обработчики для котят
         const kittens = document.querySelectorAll('.kitten');
         kittens.forEach(kitten => {
             kitten.addEventListener('click', function() {
-                this.style.transform = 'scale(1.3)';
-                this.style.opacity = '0.6';
-                createConfetti(10);
-
-                setTimeout(() => {
-                    this.style.transform = '';
-                    this.style.opacity = '0.2';
-                }, 800);
+                createConfetti(15);
             });
         });
 
